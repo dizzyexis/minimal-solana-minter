@@ -29,5 +29,5 @@ pub struct CandyMachineData {
 
 /* seeds of the PDA, can be anything you want */
 /* remember to change them on the JS too (utils.ts file) */
-pub static PREFIX: &str = "yglHzkU";
-pub static SUFIX: &str = "FKs9tP0";
+pub static PREFIX: &str = "0LZ3DI4S2B";
+pub static SUFIX: &str = "0LZ3DI4S2B";

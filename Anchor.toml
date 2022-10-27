@@ -1,15 +1,15 @@
 [programs.localnet]
-minimal_mint = "4DJz2TvohxXxovGgwjWZcfXoZaoHJR4cHvGTF15Bot42"
+minimal_mint = "3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv"
 
 [programs.devnet]
-minimal_mint = "4DJz2TvohxXxovGgwjWZcfXoZaoHJR4cHvGTF15Bot42"
+minimal_mint = "3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "devnet"
-wallet = "~/.config/solana/devnet.json"
+wallet = "/home/guilherme/my-solana-wallet/arceuus-keypair.json"
 
 [scripts]
 test = "npx ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

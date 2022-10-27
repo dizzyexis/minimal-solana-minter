@@ -8,17 +8,22 @@ pub mod error;
 pub mod state;
 pub mod utils;
 
-declare_id!("4DJz2TvohxXxovGgwjWZcfXoZaoHJR4cHvGTF15Bot42");
+declare_id!("3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv");
 
 #[program]
 pub mod minimal_mint {
 
     use super::*;
-    use anchor_lang::solana_program::{program::{invoke_signed, invoke}, system_instruction};
-    use metaplex_token_metadata::{instruction::{create_metadata_accounts, update_metadata_accounts}, state::Creator};
+    use anchor_lang::solana_program::{
+        program::{invoke, invoke_signed},
+        system_instruction,
+    };
+    use metaplex_token_metadata::{
+        instruction::{create_metadata_accounts, update_metadata_accounts},
+        state::Creator,
+    };
 
     pub fn mint_nft(ctx: Context<MintNFT>, nft_name: String, nft_uri: String) -> ProgramResult {
-
         let candy_machine = &mut ctx.accounts.candy_machine;
         let now = Clock::get()?.unix_timestamp;
 
@@ -60,8 +65,10 @@ pub mod minimal_mint {
 
         /* if you are confused about PDAs and why it is needed */
         /* please read this article: https://paulx.dev/blog/2021/01/14/programming-on-solana-an-introduction/#program-derived-addresses-pdas-part-1 */
-        let (_pda_pubkey, bump) =
-            Pubkey::find_program_address(&[state::PREFIX.as_bytes(), state::SUFIX.as_bytes()], &self::id());
+        let (_pda_pubkey, bump) = Pubkey::find_program_address(
+            &[state::PREFIX.as_bytes(), state::SUFIX.as_bytes()],
+            &self::id(),
+        );
 
         let authority_seeds = [state::PREFIX.as_bytes(), state::SUFIX.as_bytes(), &[bump]];
 
@@ -158,7 +165,6 @@ pub mod minimal_mint {
         _bump: u8,
         data: CandyMachineData,
     ) -> ProgramResult {
-        
         let candy_machine = &mut ctx.accounts.candy_machine;
 
         msg!("pubkey {}", candy_machine.key());
@@ -175,7 +181,6 @@ pub mod minimal_mint {
         price: Option<u64>,
         go_live_date: Option<i64>,
     ) -> ProgramResult {
-
         let candy_machine = &mut ctx.accounts.candy_machine;
 
         if let Some(p) = price {

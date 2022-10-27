@@ -14,25 +14,25 @@ pub struct MintNFT<'info> {
         has_one = wallet,
     )]
     pub candy_machine: Account<'info, CandyMachine>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub wallet: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub metadata: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut)]
     pub mint: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(signer)]
     pub mint_authority: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = spl_token::id())]
     pub token_program: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = metaplex_token_metadata::id())]
     pub token_metadata_program: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
 
@@ -42,13 +42,12 @@ pub struct MintNFT<'info> {
 #[derive(Accounts)]
 #[instruction(bump: u8, data: CandyMachineData)]
 pub struct InitializeCandyMachine<'info> {
-
     #[account(
         init,
         seeds=[PREFIX.as_bytes(), SUFIX.as_bytes()],
         /* anchor automatically pays the rent if I use 'payer' and 'space' in this macro */
         payer = authority,
-        bump = bump,
+        bump,
         space =
             8  +  // < discriminator
                   // \/ candy_machine
@@ -58,13 +57,13 @@ pub struct InitializeCandyMachine<'info> {
             32    // start date
     )]
     pub candy_machine: Account<'info, CandyMachine>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(constraint = wallet.data_is_empty() && wallet.lamports() > 0 )]
     pub wallet: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(mut, signer, constraint= authority.data_is_empty() && authority.lamports() > 0)]
     pub authority: AccountInfo<'info>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
 }
@@ -76,7 +75,7 @@ pub struct UpdateCandyMachine<'info> {
         has_one = authority,
     )]
     pub candy_machine: Account<'info, CandyMachine>,
-
+    /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(signer)]
     authority: AccountInfo<'info>,
 }
@@ -86,11 +85,11 @@ pub struct UpdateCandyMachine<'info> {
 
 /*
     bool	        1 byte	    1 bit rounded up to 1 byte.
-    u8 or i8	    1 byte	
-    u16 or i16	    2 bytes	
-    u32 or i32	    4 bytes	
-    u64 or i64	    8 bytes	
-    u128 or i128	16 bytes	
+    u8 or i8	    1 byte
+    u16 or i16	    2 bytes
+    u32 or i32	    4 bytes
+    u64 or i64	    8 bytes
+    u128 or i128	16 bytes
     [u16; 32]	    64 bytes	32 items x 2 bytes. [itemSize; arrayLength]
     PubKey	        32 bytes	Same as [u8; 32]
     vec<u16>	    Any multiple of 2 bytes + 4 bytes for the prefix	Need to allocate the maximum amount of item that could be required.
