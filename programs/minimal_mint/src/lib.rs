@@ -2,13 +2,15 @@ use {
     crate::{error::ErrorCode, state::CandyMachineData},
     anchor_lang::prelude::*,
     context::*,
+    solana_program::instruction::Instruction,
+    solana_program::sysvar::instructions::load_instruction_at_checked,
 };
 pub mod context;
 pub mod error;
 pub mod state;
-pub mod utils;
+pub mod verify_signature;
 
-declare_id!("3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv");
+declare_id!("HK3XFNQowgUiTcpF3hZgHQVLY7PPBpkJEcszEMSNRbSN");
 
 #[program]
 pub mod minimal_mint {
@@ -23,7 +25,26 @@ pub mod minimal_mint {
         state::Creator,
     };
 
-    pub fn mint_nft(ctx: Context<MintNFT>, nft_name: String, nft_uri: String) -> ProgramResult {
+    pub fn mint_nft(
+        ctx: Context<MintNFT>,
+        msg: Vec<u8>,
+        sig: [u8; 64],
+        recovery_id: u8,
+        nft_name: String,
+        nft_uri: String,
+    ) -> ProgramResult {
+        /* Get what should be the Secp256k1Program instruction */
+        let ix: Instruction = load_instruction_at_checked(0, &ctx.accounts.ix_sysvar)?;
+
+        /* Check that ix is what we expect to have been sent */
+        verify_signature::verify_secp256k1_ix(
+            &ix,
+            &ctx.accounts.candy_machine.data.eth_signer,
+            &msg,
+            &sig,
+            recovery_id,
+        )?;
+
         let candy_machine = &mut ctx.accounts.candy_machine;
         let now = Clock::get()?.unix_timestamp;
 
@@ -179,9 +200,16 @@ pub mod minimal_mint {
     pub fn update_candy_machine(
         ctx: Context<UpdateCandyMachine>,
         price: Option<u64>,
+        eth_signer: Option<[u8; 20]>,
         go_live_date: Option<i64>,
     ) -> ProgramResult {
         let candy_machine = &mut ctx.accounts.candy_machine;
+
+        if let Some(eth_s) = eth_signer {
+            msg!("Eth Signer changed to {:?}", candy_machine.data.eth_signer);
+            msg!("Eth Signer changed to {:?}", eth_s);
+            candy_machine.data.eth_signer = eth_s;
+        }
 
         if let Some(p) = price {
             msg!("Price changed from {}", candy_machine.data.price);
@@ -197,4 +225,6 @@ pub mod minimal_mint {
 
         Ok(())
     }
+
+    /* TODO: Update signer */
 }

@@ -5,6 +5,7 @@ use crate::state::*;
 use {
     anchor_lang::{prelude::*, solana_program::system_program},
     metaplex_token_metadata,
+    solana_program::sysvar::instructions::ID as IX_ID,
 };
 
 #[derive(Accounts)]
@@ -35,8 +36,10 @@ pub struct MintNFT<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
-
     pub rent: Sysvar<'info, Rent>,
+    /// CHECK: This is not dangerous because we don't read or write from this account
+    #[account(address = IX_ID)]
+    pub ix_sysvar: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]

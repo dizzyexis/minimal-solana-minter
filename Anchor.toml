@@ -1,8 +1,8 @@
 [programs.localnet]
-minimal_mint = "3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv"
+minimal_mint = "HK3XFNQowgUiTcpF3hZgHQVLY7PPBpkJEcszEMSNRbSN"
 
 [programs.devnet]
-minimal_mint = "3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv"
+minimal_mint = "HK3XFNQowgUiTcpF3hZgHQVLY7PPBpkJEcszEMSNRbSN"
 
 [registry]
 url = "https://anchor.projectserum.com"

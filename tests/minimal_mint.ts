@@ -14,8 +14,10 @@ import {
   getTokenWallet,
   MY_WALLET,
 } from '../utils'
+import { createSignature } from '../scripts/EthSignature'
 import initializeCandyMachine from '../scripts/initializeCandyMachine'
 import * as assert from 'assert'
+
 const { Keypair, SystemProgram, PublicKey, SYSVAR_RENT_PUBKEY } = web3
 
 describe('tests', () => {
@@ -47,9 +49,23 @@ describe('tests', () => {
         MintLayout.span,
       )
 
-      await program.rpc.mintNft(
-        'Shrek #1',
-        'https://api.amoebits.io/get/amoebits_1',
+      const nftName = 'Shrek #55'
+      const nftImage = 'https://api.amoebits.io/get/amoebits_1'
+
+      const {
+        actual_message,
+        signature,
+        recoveryId,
+        eth_address,
+      } = await createSignature(nftName, nftImage)
+
+      const trueRandomPair = Keypair.generate()
+      const tx = await program.rpc.mintNft(
+        Buffer.from(actual_message),
+        Buffer.from(signature),
+        recoveryId,
+        nftName,
+        nftImage,
         {
           accounts: {
             candyMachine,
@@ -61,9 +77,17 @@ describe('tests', () => {
             tokenProgram: TOKEN_PROGRAM_ID,
             systemProgram: SystemProgram.programId,
             rent: SYSVAR_RENT_PUBKEY,
+            ixSysvar: web3.SYSVAR_INSTRUCTIONS_PUBKEY,
           },
           signers: [mint, MY_WALLET],
           instructions: [
+            /* Create the Secp256k1Program instruction on-chain*/
+            web3.Secp256k1Program.createInstructionWithEthAddress({
+              ethAddress: eth_address,
+              message: actual_message,
+              signature: signature,
+              recoveryId: recoveryId,
+            }),
             /* create a token/mint account and pay the rent */
             SystemProgram.createAccount({
               fromPubkey: MY_WALLET.publicKey,
@@ -77,7 +101,7 @@ describe('tests', () => {
               mint.publicKey,
               0, // decimals
               MY_WALLET.publicKey, // mint authority
-              MY_WALLET.publicKey, // freeze authority
+              trueRandomPair.publicKey, // freeze authority
             ),
             /* create an account that will hold your NFT */
             createAssociatedTokenAccountInstruction(
@@ -98,6 +122,7 @@ describe('tests', () => {
           ],
         },
       )
+      console.log('Transaction signature:', tx)
     } catch (e) {
       throw e
     }

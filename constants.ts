@@ -21,9 +21,9 @@ export const SUFIX = '0LZ3DI4S2B'
 
 /* replace the following with your own pubkeys */
 export const candyMachine = new web3.PublicKey(
-  'G7kEN4Zntx6rc2y6Chf5qpDyeceFLAsFFSwknXnosJW7',
+  'EijuGy7fw2gfZ3x5qKjTMTj9vBnSvwo6rCLsXLcHhDYz',
 )
 
 export const programId = new web3.PublicKey(
-  '3Numpd8aYKBbL9MVaFtqHxUotfpgqBGGMDiJZvkcHtwv',
+  'HK3XFNQowgUiTcpF3hZgHQVLY7PPBpkJEcszEMSNRbSN',
 )

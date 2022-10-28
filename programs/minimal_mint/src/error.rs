@@ -2,12 +2,15 @@ use anchor_lang::prelude::*;
 
 #[error]
 pub enum ErrorCode {
-  #[msg("You don't have enough SOL to mint this NFT")]
-  NotEnoughSOL,
+    #[msg("The signature provided to verify the metadata is invalid")]
+    SignatureVerificationFailed,
 
-  #[msg("The launch date has not come yet")]
-  CandyMachineNotLiveYet,
+    #[msg("You don't have enough SOL to mint this NFT")]
+    NotEnoughSOL,
 
-  #[msg("There are no more NFTs to mint in this collection")]
-  CandyMachineEmpty,
+    #[msg("The launch date has not come yet")]
+    CandyMachineNotLiveYet,
+
+    #[msg("There are no more NFTs to mint in this collection")]
+    CandyMachineEmpty,
 }

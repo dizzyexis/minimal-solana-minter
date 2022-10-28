@@ -18,6 +18,7 @@ pub struct CandyMachine {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, PartialEq)]
 pub struct CandyMachineData {
+    pub eth_signer: [u8; 20],
     pub price: u64,
     pub nfts_minted: u64,
     pub go_live_date: Option<i64>,
